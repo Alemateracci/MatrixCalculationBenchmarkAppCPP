@@ -1,0 +1,12 @@
+# Build output
+MainApp/main
+*.o
+*.out
+*.exe
+*.dSYM/
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
