@@ -1,9 +1,9 @@
 // Main application implementation together
 
-#include "mat_operations.h"
-#include <iostream>
-#include <chrono>
-#include <iomanip>
+#include "mat_operations.h" //Including the header file for matrix operations
+#include <iostream> //Including the input-output stream library for console input and output
+#include <chrono> //Including the chrono library for measuring time
+#include <iomanip> //Including the iomanip library for formatting output
 
 //Structure for returning data from each experiment run
 struct RunResult
@@ -26,14 +26,14 @@ double ChecksumCheck(const MatrixNa& C)
 //Function for single thread multiplication
 RunResult SingleThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size)
 {
-    auto starttime = std::chrono::steady_clock::now();
-    MatrixMultiplySingle(A, B, C, size);
-    auto endtime = std::chrono::steady_clock::now();
+    auto starttime = std::chrono::steady_clock::now(); //Start of the timer
+    MatrixMultiplySingle(A, B, C, size); //Running the function for single thread multiplication
+    auto endtime = std::chrono::steady_clock::now(); //Stop of the timer
 
-    std::chrono::duration<double> DurationTimeSingle = endtime - starttime;
+    std::chrono::duration<double> DurationTimeSingle = endtime - starttime; //Calculating the duration of the function run
 
-    //Sum of all elements of C: a quick fingerprint that every later version must reproduce
-    double checksum = ChecksumCheck(C);
+    double checksum = ChecksumCheck(C); //Sum of all elements of C: a quick fingerprint that every later version must reproduce
+
 
     std::cout << std::fixed << std::setprecision(8);
     std::cout << "\n";
@@ -43,20 +43,19 @@ RunResult SingleThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& 
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
-    return RunResult(DurationTimeSingle.count(), checksum);
+    return RunResult(DurationTimeSingle.count(), checksum); //Returning the time and checksum of the single-threaded run
 }
 
 //Function for multi thread multiplication
 RunResult MultiThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads)
 {
-    auto starttime = std::chrono::steady_clock::now();
-    MatrixMultiplyMulti(A, B, C, size, threads);
-    auto endtime = std::chrono::steady_clock::now();
+    auto starttime = std::chrono::steady_clock::now(); //Start of the timer
+    MatrixMultiplyMulti(A, B, C, size, threads); //Running the function for multi thread multiplication
+    auto endtime = std::chrono::steady_clock::now(); //Stop of the timer
 
-    std::chrono::duration<double> DurationTimeMulti = endtime - starttime;
+    std::chrono::duration<double> DurationTimeMulti = endtime - starttime; //Calculating the duration of the function run
 
-    //Same fingerprint as the single-thread version, the two must match
-    double checksum = ChecksumCheck(C);
+    double checksum = ChecksumCheck(C); //Same fingerprint as the single-thread version, the two must match
 
     std::cout << std::fixed << std::setprecision(8);
     std::cout << "---------------------Multi-threaded---------------------" << "\n";
@@ -65,20 +64,19 @@ RunResult MultiThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
-    return RunResult(DurationTimeMulti.count(), checksum);
+    return RunResult(DurationTimeMulti.count(), checksum); //Returning the time and checksum of the multi-threaded run
 }
 
 //Function for multi thread multiplication with memory-optimised (reordered) loops
 RunResult MultiThreadedReorderedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads)
 {
-    auto starttime = std::chrono::steady_clock::now();
-    MatrixMultiplyMultiReordered(A, B, C, size, threads);
-    auto endtime = std::chrono::steady_clock::now();
+    auto starttime = std::chrono::steady_clock::now(); //Start of the timer
+    MatrixMultiplyMultiReordered(A, B, C, size, threads); //Running the function for multi thread multiplication with memory-optimised (reordered) loops
+    auto endtime = std::chrono::steady_clock::now(); //Stop of the timer
 
-    std::chrono::duration<double> DurationTimeReordered = endtime - starttime;
+    std::chrono::duration<double> DurationTimeReordered = endtime - starttime; //Calculating the duration of the function run
 
-    //Same fingerprint as the single-thread version, they must match
-    double checksum = ChecksumCheck(C);
+    double checksum = ChecksumCheck(C); //Same fingerprint as the single-thread version, they must match
 
     std::cout << std::fixed << std::setprecision(8);
     std::cout << "------------Multi-threaded, memory-optimised------------" << "\n";
@@ -87,20 +85,19 @@ RunResult MultiThreadedReorderedMatrixMultiplication(const MatrixNa& A, const Ma
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
-    return RunResult(DurationTimeReordered.count(), checksum);
+    return RunResult(DurationTimeReordered.count(), checksum); //Returning the time and checksum of the multi-threaded run with memory-optimised (reordered) loops
 }
 
 //Function for multi thread multiplication with memory-optimised (reordered) loops and cache blocking
 RunResult MultiThreadedReorderedBlockedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads)
 {
-    auto starttime = std::chrono::steady_clock::now();
-    MatrixMultiplyMultiReorderedBlocked(A, B, C, size, threads);
-    auto endtime = std::chrono::steady_clock::now();
+    auto starttime = std::chrono::steady_clock::now(); //Start of the timer
+    MatrixMultiplyMultiReorderedBlocked(A, B, C, size, threads); //Running the function for multi thread multiplication with memory-optimised (reordered) loops and cache blocking
+    auto endtime = std::chrono::steady_clock::now(); //Stop of the timer
 
-    std::chrono::duration<double> DurationTimeReorderedBlocked = endtime - starttime;
+    std::chrono::duration<double> DurationTimeReorderedBlocked = endtime - starttime; //Calculating the duration of the function run
 
-    //Same fingerprint as the single-thread version, they must match
-    double checksum = ChecksumCheck(C);
+    double checksum = ChecksumCheck(C); //Same fingerprint as the single-thread version, they must match
 
     std::cout << std::fixed << std::setprecision(8);
     std::cout << "------------Multi-threaded and cache-blocked------------" << "\n";
@@ -109,14 +106,14 @@ RunResult MultiThreadedReorderedBlockedMatrixMultiplication(const MatrixNa& A, c
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
-    return RunResult(DurationTimeReorderedBlocked.count(), checksum);
+    return RunResult(DurationTimeReorderedBlocked.count(), checksum); //Returning the time and checksum of the multi-threaded run with memory-optimised (reordered) loops and cache blocking
 }
 
 //Prints the speedup and the laws of one multi-threaded version compared with the single-thread run
 void PrintLaws(const char* name, double secondsSingleThread, double secondsMultiThread, std::size_t threads)
 {
-    double speedup = CalculateSpeedup(secondsSingleThread, secondsMultiThread);
-    double parallelFraction = CalculateAmdahlParallelFraction(speedup, threads);
+    double speedup = CalculateSpeedup(secondsSingleThread, secondsMultiThread); //Calculating the speedup of the multi-threaded run compared to the single-thread run
+    double parallelFraction = CalculateAmdahlParallelFraction(speedup, threads); //Calculating the parallel fraction P of the program measured from the speedup (Amdahl's law solved for P)
 
     std::cout << std::fixed << std::setprecision(3);
     std::cout << "--------" << name << " (" << threads << " threads)--------" << "\n";

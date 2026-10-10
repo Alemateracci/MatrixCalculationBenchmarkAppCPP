@@ -1,12 +1,12 @@
-//File for all shared operations used on matrices and vectors ut only declares them (no body)
+//File for all shared operations used on matrices and vectors but only declares them (no body)
 
-#pragma once
+#pragma once //Prevents multiple inclusions of this header file
 
-#include <cstddef>
-#include <string>
-#include <vector>
+#include <cstddef> //Importing the cstddef library for size_t
+#include <string> //Importing the string library for std::string
+#include <vector> //Importing the vector library for std::vector
 
-using MatrixNa = std::vector<double>; //Matrix 
+using MatrixNa = std::vector<double>; //The Matrix used throughout the program
 
 // Fills an n x n matrix with random values between 0 and 1 using the provided seed.
 void MatrixFill(MatrixNa& mat, std::size_t size, unsigned int seed); //Unassigned means only positive larger numbers

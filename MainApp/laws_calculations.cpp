@@ -1,9 +1,11 @@
 //Calculations of speedup and Amdahl's law from measured times
 
-#include "mat_operations.h"
+#include "mat_operations.h" //Including the header file for matrix operations
 
+//Function for speedup of a multi-threaded run compared to the single-thread
 double CalculateSpeedup(double secondsSingleThread, double secondsMultiThread)
 {
+    //Checking if the multi-threaded time is less than or equal to 0.0
     if (secondsMultiThread <= 0.0)
     {
         return 0.0; // protects against dividing by zero
@@ -11,9 +13,10 @@ double CalculateSpeedup(double secondsSingleThread, double secondsMultiThread)
     return secondsSingleThread / secondsMultiThread;
 }
 
-//Amdahl: speedup = 1 / ((1 - P) + P / N), solved for P gives P = (1 - 1 / speedup) / (1 - 1 / N)
+//Function for parallel fraction P of the program measured from the speedup (Amdahl's law solved for P)
 double CalculateAmdahlParallelFraction(double speedup, std::size_t threads)
 {
+    //Checking if the number of threads is less than 2 or if the speedup is less than or equal to 0.0
     if (threads < 2 || speedup <= 0.0)
     {
         return 0.0; // with one thread nothing can be measured
