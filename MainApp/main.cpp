@@ -61,6 +61,28 @@ double MultiThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, M
     return checksum;
 }
 
+//Function for multi thread multiplication with memory-optimised (reordered) loops
+double MultiThreadedReorderedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads)
+{
+    auto starttime = std::chrono::steady_clock::now();
+    MatrixMultiplyMultiReordered(A, B, C, size, threads);
+    auto endtime = std::chrono::steady_clock::now();
+
+    std::chrono::duration<double> DurationTimeReordered = endtime - starttime;
+
+    //Same fingerprint as the single-thread version, they must match
+    double checksum = ChecksumCheck(C);
+
+    std::cout << std::fixed << std::setprecision(8);
+    std::cout << "---------------Multi-threaded, memory-optimised---------------" << "\n";
+    std::cout << "Multi-threaded memory-optimised time: " << DurationTimeReordered.count() << " s\n";
+    std::cout << "Checksum of C: " << checksum << "\n";
+    std::cout << "--------------------------------------------------------" << "\n";
+    std::cout << "\n";
+
+    return checksum;
+}
+
 //Main function
 int main()
 {
@@ -92,8 +114,9 @@ int main()
     //Calling thread calculation function
     double SingleThreadedChecksum = SingleThreadedMatrixMultiplication(A, B, C, size);
     double MultiThreadedChecksum = MultiThreadedMatrixMultiplication(A, B, C, size, threads);
+    double MultiThreadedReorderedChecksum = MultiThreadedReorderedMatrixMultiplication(A, B, C, size, threads);
 
-    if (SingleThreadedChecksum == MultiThreadedChecksum)
+    if (SingleThreadedChecksum == MultiThreadedChecksum && SingleThreadedChecksum == MultiThreadedReorderedChecksum)
     {
         std::cout << "Checksums match! The results are consistent." << "\n";
         std::cout << "\n";

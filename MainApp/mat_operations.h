@@ -16,3 +16,6 @@ void MatrixMultiplySingle(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std
 
 //Multiplication function of AxB = C with multiple threads.
 void MatrixMultiplyMulti(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads);
+
+//Multiplication function of AxB = C with multiple threads and cache-friendly (reordered) loops.
+void MatrixMultiplyMultiReordered(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads);
