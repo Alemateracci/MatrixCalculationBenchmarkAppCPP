@@ -1,5 +1,6 @@
 # Build output
 MainApp/main
+MainApp/build/
 *.o
 *.out
 *.exe
