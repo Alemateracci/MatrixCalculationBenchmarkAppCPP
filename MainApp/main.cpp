@@ -5,6 +5,13 @@
 #include <chrono>
 #include <iomanip>
 
+//Structure for returning data from each experiment run
+struct RunResult
+{
+    double time;
+    double checksum;
+};
+
 //Function to calculate the checksum of a matrix
 double ChecksumCheck(const MatrixNa& C)
 {
@@ -17,7 +24,7 @@ double ChecksumCheck(const MatrixNa& C)
 }
 
 //Function for single thread multiplication
-double SingleThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size)
+RunResult SingleThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size)
 {
     auto starttime = std::chrono::steady_clock::now();
     MatrixMultiplySingle(A, B, C, size);
@@ -36,11 +43,11 @@ double SingleThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, 
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
-    return checksum;
+    return RunResult(DurationTimeSingle.count(), checksum);
 }
 
 //Function for multi thread multiplication
-double MultiThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads)
+RunResult MultiThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads)
 {
     auto starttime = std::chrono::steady_clock::now();
     MatrixMultiplyMulti(A, B, C, size, threads);
@@ -58,11 +65,11 @@ double MultiThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, M
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
-    return checksum;
+    return RunResult(DurationTimeMulti.count(), checksum);
 }
 
 //Function for multi thread multiplication with memory-optimised (reordered) loops
-double MultiThreadedReorderedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads)
+RunResult MultiThreadedReorderedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads)
 {
     auto starttime = std::chrono::steady_clock::now();
     MatrixMultiplyMultiReordered(A, B, C, size, threads);
@@ -80,11 +87,11 @@ double MultiThreadedReorderedMatrixMultiplication(const MatrixNa& A, const Matri
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
-    return checksum;
+    return RunResult(DurationTimeReordered.count(), checksum);
 }
 
 //Function for multi thread multiplication with memory-optimised (reordered) loops and cache blocking
-double MultiThreadedReorderedBlockedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads)
+RunResult MultiThreadedReorderedBlockedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads)
 {
     auto starttime = std::chrono::steady_clock::now();
     MatrixMultiplyMultiReorderedBlocked(A, B, C, size, threads);
@@ -102,8 +109,26 @@ double MultiThreadedReorderedBlockedMatrixMultiplication(const MatrixNa& A, cons
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
-    return checksum;
+    return RunResult(DurationTimeReorderedBlocked.count(), checksum);
 }
+
+//Prints the speedup and the laws of one multi-threaded version compared with the single-thread run
+void PrintLaws(const char* name, double secondsSingleThread, double secondsMultiThread, std::size_t threads)
+{
+    double speedup = CalculateSpeedup(secondsSingleThread, secondsMultiThread);
+    double parallelFraction = CalculateAmdahlParallelFraction(speedup, threads);
+
+    std::cout << std::fixed << std::setprecision(3);
+    std::cout << "---------------Laws: " << name << " (" << threads << " threads)---------------" << "\n";
+    std::cout << "Single-thread time: " << secondsSingleThread << " s\n";
+    std::cout << "Multi-thread time: " << secondsMultiThread << " s\n";
+    std::cout << "Speedup vs single-thread: " << speedup << "x\n";
+    std::cout << "Parallel fraction P (Amdahl): " << parallelFraction << "\n";
+    std::cout << "--------------------------------------------------------" << "\n";
+    std::cout << "\n";
+}
+
+
 
 //Main function
 int main()
@@ -134,12 +159,13 @@ int main()
     MatrixFill(B, size, 2);   // seed 2 for B
 
     //Calling thread calculation function
-    double SingleThreadedChecksum = SingleThreadedMatrixMultiplication(A, B, C, size);
-    double MultiThreadedChecksum = MultiThreadedMatrixMultiplication(A, B, C, size, threads);
-    double MultiThreadedReorderedChecksum = MultiThreadedReorderedMatrixMultiplication(A, B, C, size, threads);
-    double MultiThreadedReorderedBlockedChecksum = MultiThreadedReorderedBlockedMatrixMultiplication(A, B, C, size, threads);
+    RunResult SingleThreadedData = SingleThreadedMatrixMultiplication(A, B, C, size);
+    RunResult MultiThreadedData = MultiThreadedMatrixMultiplication(A, B, C, size, threads);
+    RunResult MultiThreadedReorderedData = MultiThreadedReorderedMatrixMultiplication(A, B, C, size, threads);
+    RunResult MultiThreadedReorderedBlockedData = MultiThreadedReorderedBlockedMatrixMultiplication(A, B, C, size, threads);
 
-    if (SingleThreadedChecksum == MultiThreadedChecksum && SingleThreadedChecksum == MultiThreadedReorderedChecksum && SingleThreadedChecksum == MultiThreadedReorderedBlockedChecksum)
+    //Printing if all results are the same
+    if (SingleThreadedData.checksum == MultiThreadedData.checksum && SingleThreadedData.checksum == MultiThreadedReorderedData.checksum && SingleThreadedData.checksum == MultiThreadedReorderedBlockedData.checksum)
     {
         std::cout << "Checksums match! The results are consistent." << "\n";
         std::cout << "\n";
@@ -149,4 +175,10 @@ int main()
         std::cout << "Checksums do not match! There is an inconsistency in the results." << "\n";
         std::cout << "\n";
     }
+
+    //Laws: each multi-threaded version compared with the single-thread run
+    PrintLaws("Multi-threaded", SingleThreadedData.time, MultiThreadedData.time, threads);
+    PrintLaws("Memory-optimised", SingleThreadedData.time, MultiThreadedReorderedData.time, threads);
+    PrintLaws("Cache-blocked", SingleThreadedData.time, MultiThreadedReorderedBlockedData.time, threads);
+
 }
