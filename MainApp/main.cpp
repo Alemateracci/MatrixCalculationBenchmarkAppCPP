@@ -38,8 +38,8 @@ RunResult SingleThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& 
     std::cout << std::fixed << std::setprecision(8);
     std::cout << "\n";
     std::cout << "---------------------Single-threaded--------------------" << "\n";
-    std::cout << "Single-threaded time: " << DurationTimeSingle.count() << " s\n";
-    std::cout << "Checksum of C: " << checksum << "\n";
+    std::cout << "Time: " << DurationTimeSingle.count() << " s\n";
+    std::cout << "Checksum: " << checksum << "\n";
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
@@ -59,9 +59,9 @@ RunResult MultiThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B
     double checksum = ChecksumCheck(C);
 
     std::cout << std::fixed << std::setprecision(8);
-    std::cout << "---------------------Multi-threaded--------------------" << "\n";
-    std::cout << "Multi-threaded time: " << DurationTimeMulti.count() << " s\n";
-    std::cout << "Checksum of C: " << checksum << "\n";
+    std::cout << "---------------------Multi-threaded---------------------" << "\n";
+    std::cout << "Time: " << DurationTimeMulti.count() << " s\n";
+    std::cout << "Checksum: " << checksum << "\n";
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
@@ -82,8 +82,8 @@ RunResult MultiThreadedReorderedMatrixMultiplication(const MatrixNa& A, const Ma
 
     std::cout << std::fixed << std::setprecision(8);
     std::cout << "------------Multi-threaded, memory-optimised------------" << "\n";
-    std::cout << "Multi-threaded memory-optimised time: " << DurationTimeReordered.count() << " s\n";
-    std::cout << "Checksum of C: " << checksum << "\n";
+    std::cout << "Time: " << DurationTimeReordered.count() << " s\n";
+    std::cout << "Checksum: " << checksum << "\n";
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
@@ -104,8 +104,8 @@ RunResult MultiThreadedReorderedBlockedMatrixMultiplication(const MatrixNa& A, c
 
     std::cout << std::fixed << std::setprecision(8);
     std::cout << "------------Multi-threaded and cache-blocked------------" << "\n";
-    std::cout << "Multi-threaded memory-optimised and cache-blocked time: " << DurationTimeReorderedBlocked.count() << " s\n";
-    std::cout << "Checksum of C: " << checksum << "\n";
+    std::cout << "Time: " << DurationTimeReorderedBlocked.count() << " s\n";
+    std::cout << "Checksum: " << checksum << "\n";
     std::cout << "--------------------------------------------------------" << "\n";
     std::cout << "\n";
 
@@ -119,16 +119,14 @@ void PrintLaws(const char* name, double secondsSingleThread, double secondsMulti
     double parallelFraction = CalculateAmdahlParallelFraction(speedup, threads);
 
     std::cout << std::fixed << std::setprecision(3);
-    std::cout << "---------------Laws: " << name << " (" << threads << " threads)---------------" << "\n";
+    std::cout << "--------" << name << " (" << threads << " threads)--------" << "\n";
     std::cout << "Single-thread time: " << secondsSingleThread << " s\n";
     std::cout << "Multi-thread time: " << secondsMultiThread << " s\n";
     std::cout << "Speedup vs single-thread: " << speedup << "x\n";
     std::cout << "Parallel fraction P (Amdahl): " << parallelFraction << "\n";
-    std::cout << "--------------------------------------------------------" << "\n";
+    std::cout << "----------------------------------------------------------" << "\n";
     std::cout << "\n";
 }
-
-
 
 //Main function
 int main()
@@ -167,16 +165,19 @@ int main()
     //Printing if all results are the same
     if (SingleThreadedData.checksum == MultiThreadedData.checksum && SingleThreadedData.checksum == MultiThreadedReorderedData.checksum && SingleThreadedData.checksum == MultiThreadedReorderedBlockedData.checksum)
     {
-        std::cout << "Checksums match! The results are consistent." << "\n";
+        std::cout << "\n";
+        std::cout << "CHECKSUM MATCHES. THE RESULTS ARE CONSISTENT." << "\n";
         std::cout << "\n";
     }
     else
     {
-        std::cout << "Checksums do not match! There is an inconsistency in the results." << "\n";
+        std::cout << "\n";
+        std::cout << "CHECKSUMS DO NOT MATCH. THERE IS AN INCONSISTENCY IN THE RESULTS." << "\n";
         std::cout << "\n";
     }
 
     //Laws: each multi-threaded version compared with the single-thread run
+    std::cout << "--------------------------LAWS-----------------------------" << "\n";
     PrintLaws("Multi-threaded", SingleThreadedData.time, MultiThreadedData.time, threads);
     PrintLaws("Memory-optimised", SingleThreadedData.time, MultiThreadedReorderedData.time, threads);
     PrintLaws("Cache-blocked", SingleThreadedData.time, MultiThreadedReorderedBlockedData.time, threads);

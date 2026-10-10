@@ -21,9 +21,3 @@ double CalculateAmdahlParallelFraction(double speedup, std::size_t threads)
     const double n = static_cast<double>(threads);
     return (1.0 - 1.0 / speedup) / (1.0 - 1.0 / n);
 }
-
-double CalculateAmdahlSpeedup(double parallelFraction, std::size_t threads)
-{
-    const double n = static_cast<double>(threads);
-    return 1.0 / ((1.0 - parallelFraction) + parallelFraction / n);
-}

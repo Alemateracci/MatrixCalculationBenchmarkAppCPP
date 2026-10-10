@@ -28,6 +28,3 @@ double CalculateSpeedup(double timeSingleThread, double timeMultiThread);
 
 //Parallel fraction P of the program measured from the speedup (Amdahl's law solved for P).
 double CalculateAmdahlParallelFraction(double speedup, std::size_t threads);
-
-//Speedup that Amdahl's law predicts for a parallel fraction P on N threads.
-double CalculateAmdahlSpeedup(double parallelFraction, std::size_t threads);
