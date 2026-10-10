@@ -37,7 +37,7 @@ RunResult SingleThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& 
 
     std::cout << std::fixed << std::setprecision(8);
     std::cout << "\n";
-    std::cout << "---------------------Single-threaded--------------------" << "\n";
+    std::cout << "---------------Single-threaded(Sequential)--------------" << "\n";
     std::cout << "Time: " << DurationTimeSingle.count() << " s\n";
     std::cout << "Checksum: " << checksum << "\n";
     std::cout << "--------------------------------------------------------" << "\n";
@@ -58,7 +58,7 @@ RunResult MultiThreadedMatrixMultiplication(const MatrixNa& A, const MatrixNa& B
     double checksum = ChecksumCheck(C); //Same fingerprint as the single-thread version, the two must match
 
     std::cout << std::fixed << std::setprecision(8);
-    std::cout << "---------------------Multi-threaded---------------------" << "\n";
+    std::cout << "----------------Multi-threaded(Parallel)----------------" << "\n";
     std::cout << "Time: " << DurationTimeMulti.count() << " s\n";
     std::cout << "Checksum: " << checksum << "\n";
     std::cout << "--------------------------------------------------------" << "\n";
@@ -79,7 +79,7 @@ RunResult MultiThreadedReorderedMatrixMultiplication(const MatrixNa& A, const Ma
     double checksum = ChecksumCheck(C); //Same fingerprint as the single-thread version, they must match
 
     std::cout << std::fixed << std::setprecision(8);
-    std::cout << "------------Multi-threaded, memory-optimised------------" << "\n";
+    std::cout << "------Multi-threaded, memory-optimised(Sequential)------" << "\n";
     std::cout << "Time: " << DurationTimeReordered.count() << " s\n";
     std::cout << "Checksum: " << checksum << "\n";
     std::cout << "--------------------------------------------------------" << "\n";
@@ -100,7 +100,7 @@ RunResult MultiThreadedReorderedBlockedMatrixMultiplication(const MatrixNa& A, c
     double checksum = ChecksumCheck(C); //Same fingerprint as the single-thread version, they must match
 
     std::cout << std::fixed << std::setprecision(8);
-    std::cout << "------------Multi-threaded and cache-blocked------------" << "\n";
+    std::cout << "------Multi-threaded and cache-blocked(Sequential)------" << "\n";
     std::cout << "Time: " << DurationTimeReorderedBlocked.count() << " s\n";
     std::cout << "Checksum: " << checksum << "\n";
     std::cout << "--------------------------------------------------------" << "\n";
@@ -116,7 +116,7 @@ void PrintLaws(const char* name, double secondsSingleThread, double secondsMulti
     double parallelFraction = CalculateAmdahlParallelFraction(speedup, threads); //Calculating the parallel fraction P of the program measured from the speedup (Amdahl's law solved for P)
 
     std::cout << std::fixed << std::setprecision(3);
-    std::cout << "--------" << name << " (" << threads << " threads)--------" << "\n";
+    std::cout << "------------" << name << " (" << threads << " threads)------------" << "\n";
     std::cout << "Single-thread time: " << secondsSingleThread << " s\n";
     std::cout << "Multi-thread time: " << secondsMultiThread << " s\n";
     std::cout << "Speedup vs single-thread: " << speedup << "x\n";
