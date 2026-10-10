@@ -4,6 +4,24 @@
 #include <thread>
 #include <vector>
 
+
+//Calculates rows [rowStart, rowEnd) of C, only used inside this file
+static void MultiplyMatrixRows(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t rowStart, std::size_t rowEnd)
+{
+    for (std::size_t row = rowStart; row < rowEnd; ++row) // each row of A given to this thread
+    {
+        for (std::size_t col = 0; col < size; ++col) // each column of B
+        {
+            double sum = 0.0;
+            for (std::size_t k = 0; k < size; ++k) // walk along row of A and down column of B
+            {
+                sum += A[row * size + k] * B[k * size + col];
+            }
+            C[row * size + col] = sum;
+        }
+    }
+}
+
 void MatrixMultiplyMulti(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std::size_t size, std::size_t threads)
 {
     C.assign(size * size, 0.0); //Setting the size of the result matrix
@@ -33,18 +51,7 @@ void MatrixMultiplyMulti(const MatrixNa& A, const MatrixNa& B, MatrixNa& C, std:
         
         workerthreads.emplace_back([&A, &B, &C, size, start, end]()
         {
-            for (std::size_t row = start; row < end; ++row) // each row of A given to this thread
-            {
-                for (std::size_t col = 0; col < size; ++col) // each column of B
-                {
-                    double sum = 0.0;
-                    for (std::size_t k = 0; k < size; ++k) // walk along row of A and down column of B
-                    {
-                        sum += A[row * size + k] * B[k * size + col];
-                    }
-                    C[row * size + col] = sum;
-                }
-            }
+            MultiplyMatrixRows(A, B, C, size, start, end);
         });
 
         start = end;
