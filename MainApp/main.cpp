@@ -115,12 +115,12 @@ void PrintLaws(const char* name, double secondsSingleThread, double secondsMulti
     double speedup = CalculateSpeedup(secondsSingleThread, secondsMultiThread); //Calculating the speedup of the multi-threaded run compared to the single-thread run
     double parallelFraction = CalculateAmdahlParallelFraction(speedup, threads); //Calculating the parallel fraction P of the program measured from the speedup (Amdahl's law solved for P)
 
-    std::cout << std::fixed << std::setprecision(3);
+    std::cout << std::fixed << std::setprecision(2);
     std::cout << "------------" << name << " (" << threads << " threads)------------" << "\n";
     std::cout << "Single-thread time: " << secondsSingleThread << " s\n";
     std::cout << "Multi-thread time: " << secondsMultiThread << " s\n";
     std::cout << "Speedup vs single-thread: " << speedup << "x\n";
-    std::cout << "Parallel fraction P (Amdahl): " << parallelFraction << "\n";
+    std::cout << "Parallel fraction P (Amdahl): " << parallelFraction << "%\n";
     std::cout << "----------------------------------------------------------" << "\n";
     std::cout << "\n";
 }
